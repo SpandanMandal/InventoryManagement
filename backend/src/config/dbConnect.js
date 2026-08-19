@@ -1,12 +1,18 @@
-const mongoose = require ("mongoose")
+const mongoose = require("mongoose");
 
-const dbConnect=async ()=>{
-try{const connect =await mongoose.connect(process.env.CONNECTION_STRING)
-    console.log(`Database connected:${connect.connection.host},${connect.connection.name}`)
-}catch(err){
-    console.log(err)
-    process.exit(1);
-}
-    
-}
-module.exports =dbConnect;
+const dbConnect = async () => {
+    if (!process.env.CONNECTION_STRING) {
+        console.error("Missing CONNECTION_STRING environment variable. Set CONNECTION_STRING to your MongoDB URI.");
+        process.exit(1);
+    }
+
+    try {
+        const connect = await mongoose.connect(process.env.CONNECTION_STRING);
+        console.log(`Database connected:${connect.connection.host},${connect.connection.name}`);
+    } catch (err) {
+        console.error("Failed to connect to MongoDB:", err);
+        process.exit(1);
+    }
+};
+
+module.exports = dbConnect;
